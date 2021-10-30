@@ -54,23 +54,31 @@ const formattedData = [
 ];
 
 export default function Home(): JSX.Element {
-  // const {
-  //   data,
-  //   isLoading,
-  //   isError,
-  //   isFetchingNextPage,
-  //   fetchNextPage,
-  //   hasNextPage,
-  // } = useInfiniteQuery(
-  //   'images',
-  //   // TODO AXIOS REQUEST WITH PARAM
-  //   ,
-  //   // TODO GET AND RETURN NEXT PAGE PARAM
-  // );
+  const fetchData = async () => {
+    const response = await api.get('api/images');
+    return response.data;
+  }
 
-  // const formattedData = useMemo(() => {
-  //   // TODO FORMAT AND FLAT DATA ARRAY
-  // }, [data]);
+  const {
+    data,
+    isLoading,
+    isError,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(
+    'images',
+    ({ pageParam = null }) => {
+      fetchData(pageParam)
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => allPages.length + 1,
+    }
+  );
+
+  const formattedData = useMemo(() => {
+    // TODO FORMAT AND FLAT DATA ARRAY
+  }, [data]);
 
   // TODO RENDER LOADING SCREEN
 
